@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Model>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<br />
+<br />
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Models of Vehicle</h2>
+    </div>
+    <div class="col-6 text-right">
+        <a class="btn btn-info" asp-action="Create"><i class="fas fa-car"></i>&nbsp;Add New Model</a>
+    </div>
+    <br />
+    <div class="container">
+        <table class="table">
+            <tr class="table-info">
+                <th>
+                    @Html.DisplayNameFor(m => m.Make)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(m => m.Name)
+                </th>
+                <th></th>
+            </tr>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Make.Name
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <partial name="_TableButtonPartial" model="item.Id" />
+                </tr>
+            }
+        </table>
+    </div>
+</div>

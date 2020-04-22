@@ -1,0 +1,103 @@
+﻿@model cloudscribe.Pagination.Models.PagedResult<Car>
+@using MyShop.Helpers
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<br />
+<br />
+<form asp-action="Index" method="get">
+    <div>
+        <p>
+            Find Make.<input type ="text" name="searchString" value="@ViewBag.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-info"/>
+            <a asp-action="Index">Remove Filter</a>
+        </p>
+    </div>
+</form>
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Cars</h2>
+    </div>
+    @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+    {
+        <div class="col-6 text-right">
+            <a class="btn btn-info" asp-action="Create"><i class="fas fa-car"></i>&nbsp;Add New Car</a>
+        </div>
+    }
+    <br />
+    <div class="container">
+        <table class="table">
+            <tr class="table-info">
+                <th>Car Photo</th>
+                <th>Car Detail</th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.PriceSortParam"
+                       asp-route-pageNumber="@Model.PageNumber">Price</a>
+                </th>
+                <th>Seller Information</th>
+                @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+                {
+                    <th></th>
+                }
+                else
+                {
+                    <th class="text-right">View Details</th>
+                }
+            </tr>
+            @foreach (var item in Model.Data)
+            {
+        <tr>
+            <td><img src="@item.ImagePath" width="160" height="100" /></td>
+            <td>
+                <b>@item.Make.Name</b>
+                <b> @item.Year</b>
+                <b>Model: </b>@item.Model.Name<br />
+                <b>Milleage: </b>@item.Milleage
+<td>
+                @item.Price @item.Currency
+            </td>
+            <td>
+                <b>Name:</b>@item.SellectName<br />
+                <b>Email: </b>@item.SellectEmail<br />
+                <b>Phone:</b>@item.SelectPhone<br />
+            </td>
+            @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+            {
+                <partial name="_TableButtonPartial" model="item.Id" />
+            }
+            else
+            {
+                <td class="text-right">
+                    <div class="btn-group" role="group">
+                            <a type="button" class="btn btn-primary" asp-controller="Car" asp-action="View" asp-route-id="@item.Id"><i class="fas fa-search"></i></a>
+                    </div>
+                </td>
+            }
+        </tr>
+            }
+        </table>
+        <cs-pager cs-paging-pagenumber="(int)Model.PageNumber"
+                  cs-paging-totalitems="(int)Model.TotalItems"
+                  cs-paging-pagesize="Model.PageSize"
+                  cs-show-first-last="true"
+                  cs-suppress-empty-nextprev="true"
+                  cs-suppress-inactive-firstlast="true"
+                  cs-pager-li-current-class="active"
+                  cs-pager-li-non-active-class="disabled"
+                  cs-pager-li-other-class="page-item"
+                  cs-pager-ul-class="pagination d-flex flex-wrap"
+                  cs-pager-li-current-class="page-item active"
+                  cs-pager-li-other-class="page-item"
+                  cs-pager-li-non-active-class="page-item disabled"
+                  cs-pager-link-current-class="page-link"
+                  cs-pager-link-other-class="page-link"
+                  cs-pagenumber-param="pagenumber"
+                  asp-route-searchString="@ViewBag.CurrentFilter"
+                  asp-route-sortOrder="@ViewBag.CurrentSortOrder"
+                  asp-controller="Car"
+                  asp-action="Index">
+        </cs-pager>
+    </div>
+</div>
